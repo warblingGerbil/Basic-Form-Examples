@@ -3,7 +3,6 @@
 <head>
     <title>Forms Assignment</title>
 
-    <!-- Fancy Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
@@ -96,11 +95,22 @@
             document.getElementById("home").style.display = "none";
             document.getElementById("userinfo").style.display = "none";
             document.getElementById("password").style.display = "none";
-
             document.getElementById(pageId).style.display = "block";
         }
 
+        const cleanPattern = /^[A-Za-z]+$/;
+        const foodPattern = /^[A-Za-z ]+$/;
+        const noWeirdChars = /^[\x20-\x7E]+$/;
+
         function setAction(form, name, email) {
+            if (!cleanPattern.test(name) || name.length < 2 || name.length > 20) {
+                alert("Name must be 2–20 letters only, no spaces or symbols.");
+                return false;
+            }
+            if (!noWeirdChars.test(email)) {
+                alert("Email contains invalid characters.");
+                return false;
+            }
             alert("Hi, " + name + "! Thanks for letting me know " + email + " is your email!");
             return false;
         }
@@ -110,22 +120,17 @@
             return false;
         }
 
-        // VALIDATION + USER INFO MESSAGE
         function showUserInfo() {
             let first = document.getElementById("first").value.trim();
             let last = document.getElementById("last").value.trim();
             let age = document.getElementById("age").value.trim();
             let food = document.getElementById("food").value.trim();
 
-            let namePattern = /^[A-Za-z]{2,20}$/;
-            let foodPattern = /^[A-Za-z ]{2,30}$/;
-
-            if (!namePattern.test(first)) {
+            if (!cleanPattern.test(first) || first.length < 2 || first.length > 20) {
                 alert("First name must be 2–20 letters only.");
                 return false;
             }
-
-            if (!namePattern.test(last)) {
+            if (!cleanPattern.test(last) || last.length < 2 || last.length > 20) {
                 alert("Last name must be 2–20 letters only.");
                 return false;
             }
@@ -136,7 +141,11 @@
                 return false;
             }
 
-            if (!foodPattern.test(food)) {
+            document.getElementById("age").addEventListener("input", function () {
+                if (this.value < 1) this.value = 1;
+            });
+
+            if (!foodPattern.test(food) || food.length < 2 || food.length > 30) {
                 alert("Favorite food must be 2–30 letters/spaces only.");
                 return false;
             }
@@ -145,10 +154,14 @@
             return false;
         }
 
-        // PASSWORD CHECK
         function checkPassword() {
             let guess = document.getElementById("pwguess").value.trim();
             let correct = "123";
+
+            if (!noWeirdChars.test(guess)) {
+                alert("Password contains invalid characters.");
+                return false;
+            }
 
             if (guess === correct) {
                 alert("Correct! You guessed the password!");
@@ -168,7 +181,6 @@
         <button onclick="showPage('password')">Password Guess Form</button>
     </div>
 
-    <!-- HOME PAGE -->
     <div id="home" class="page">
         <h2>Original Form</h2>
 
@@ -198,7 +210,6 @@
         </form>
     </div>
 
-    <!-- USER INFO FORM -->
     <div id="userinfo" class="page">
         <h2>User Information Form</h2>
 
@@ -213,7 +224,7 @@
             </div>
             <div>
                 <label>Age:</label>
-                <input id="age" type="number">
+                <input id="age" type="number" min="1">
             </div>
             <div>
                 <label>Favorite Food:</label>
@@ -225,7 +236,6 @@
         </form>
     </div>
 
-    <!-- PASSWORD GUESS FORM -->
     <div id="password" class="page">
         <h2>Password Guess Form</h2>
 
