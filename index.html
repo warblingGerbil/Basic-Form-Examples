@@ -118,6 +118,12 @@
             animation: fadeIn 0.4s forwards;
         }
 
+        .info-text {
+            color: #aaa;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
         @keyframes fadeIn {
             to { opacity: 1; }
         }
@@ -194,12 +200,6 @@
                 showSuccess("home", `Hi ${name}! Your email (${email}) has been recorded.`);
             }
 
-            return false;
-        }
-
-        function registerUser() {
-            clearErrors();
-            showError("register", "This button only shows the form action.");
             return false;
         }
 
@@ -281,17 +281,15 @@
                 <input id="email" name="email" type="email">
             </div>
             <div>
-                <input id="submit" type="submit">
+                <input id="submit" type="submit" value="Submit">
             </div>
         </form>
 
         <hr>
 
-        <form name="user_form">
-            <div>
-                <input id="register" type="submit" value="Register" onclick="return registerUser()">
-            </div>
-        </form>
+        <div id="register" class="info-text">
+            This form has no registration action.
+        </div>
     </div>
 
     <div id="userinfo" class="page">
