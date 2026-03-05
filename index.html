@@ -3,20 +3,32 @@
 <head>
     <title>Forms Assignment</title>
 
+    <!-- Fancy Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
     <style>
         body {
-            background: #1a1a1a;
+            background: linear-gradient(135deg, #0f0f0f, #1c1c3c, #000000);
+            background-size: 300% 300%;
+            animation: gradientShift 12s ease infinite;
             color: #e6e6e6;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         h2 {
             color: #66b3ff;
+            font-weight: 600;
         }
 
         .nav-buttons button {
-            background: #333;
+            background: #222;
             color: #fff;
             border: 2px solid #66b3ff;
             padding: 10px 20px;
@@ -24,6 +36,7 @@
             cursor: pointer;
             border-radius: 6px;
             transition: 0.3s;
+            font-size: 15px;
         }
 
         .nav-buttons button:hover {
@@ -33,7 +46,7 @@
 
         form label {
             display: inline-block;
-            width: 120px;
+            width: 140px;
         }
 
         form div {
@@ -41,11 +54,12 @@
         }
 
         input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
-            padding: 5px;
+            padding: 6px;
             border-radius: 4px;
             border: 1px solid #555;
-            background: #333;
+            background: #2a2a2a;
             color: #fff;
+            width: 200px;
         }
 
         input[type="submit"] {
@@ -56,6 +70,7 @@
             border-radius: 6px;
             cursor: pointer;
             transition: 0.3s;
+            font-weight: 600;
         }
 
         input[type="submit"]:hover {
@@ -95,21 +110,47 @@
             return false;
         }
 
+        // VALIDATION + USER INFO MESSAGE
         function showUserInfo() {
-            let first = document.getElementById("first").value;
-            let last = document.getElementById("last").value;
-            let age = document.getElementById("age").value;
-            let food = document.getElementById("food").value;
+            let first = document.getElementById("first").value.trim();
+            let last = document.getElementById("last").value.trim();
+            let age = document.getElementById("age").value.trim();
+            let food = document.getElementById("food").value.trim();
+
+            let namePattern = /^[A-Za-z]{2,20}$/;
+            let foodPattern = /^[A-Za-z ]{2,30}$/;
+
+            if (!namePattern.test(first)) {
+                alert("First name must be 2–20 letters only.");
+                return false;
+            }
+
+            if (!namePattern.test(last)) {
+                alert("Last name must be 2–20 letters only.");
+                return false;
+            }
+
+            let ageNum = Number(age);
+            if (isNaN(ageNum) || ageNum < 1 || ageNum > 130) {
+                alert("Age must be a number between 1 and 130.");
+                return false;
+            }
+
+            if (!foodPattern.test(food)) {
+                alert("Favorite food must be 2–30 letters/spaces only.");
+                return false;
+            }
 
             alert("Hello " + first + " " + last + "! You are " + age + " years old, and your favorite food is " + food + "!");
             return false;
         }
 
+        // PASSWORD CHECK
         function checkPassword() {
-            let guess = document.getElementById("pwguess").value;
-            let correct = "SuperSecret!";
+            let guess = document.getElementById("pwguess").value.trim();
+            let correct = "123";
 
-            if (guess == correct) {
+            if (guess === correct) {
                 alert("Correct! You guessed the password!");
             } else {
                 alert("Sorry, that is not the password.");
@@ -127,7 +168,7 @@
         <button onclick="showPage('password')">Password Guess Form</button>
     </div>
 
-    <!-- HOME PAGE (Original Code) -->
+    <!-- HOME PAGE -->
     <div id="home" class="page">
         <h2>Original Form</h2>
 
