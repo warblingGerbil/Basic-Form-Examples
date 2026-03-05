@@ -1,338 +1,141 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Forms Assignment</title>
+<script>
+    function showPage(pageId) {
+        document.getElementById("home").style.display = "none";
+        document.getElementById("userinfo").style.display = "none";
+        document.getElementById("password").style.display = "none";
+        document.getElementById(pageId).style.display = "block";
+    }
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="Icon.svg">
+    const cleanPattern = /^[A-Za-z]+$/;
+    const foodPattern = /^[A-Za-z ]+$/;
+    const noWeirdChars = /^[\x20-\x7E]+$/;
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    function showError(id, message) {
+        const field = document.getElementById(id);
+        let error = field.nextElementSibling;
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #0f0f0f, #1c1c3c, #000000);
-            background-size: 300% 300%;
-            animation: gradientShift 12s ease infinite;
-            color: #e6e6e6;
-            font-family: 'Poppins', sans-serif;
-            padding: 20px;
+        if (!error || !error.classList.contains("error")) {
+            error = document.createElement("span");
+            error.classList.add("error");
+            field.insertAdjacentElement("afterend", error);
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        error.textContent = message;
+    }
+
+    function clearErrors() {
+        document.querySelectorAll(".error").forEach(e => e.remove());
+    }
+
+    function setAction(form, name, email) {
+        clearErrors();
+        let valid = true;
+
+        if (name === "") {
+            showError("name", "Name cannot be empty.");
+            valid = false;
+        } else if (!cleanPattern.test(name) || name.length < 2 || name.length > 20) {
+            showError("name", "Name must be 2–20 letters only.");
+            valid = false;
         }
 
-        h2 {
-            color: #66b3ff;
-            font-weight: 600;
+        if (email === "") {
+            showError("email", "Email cannot be empty.");
+            valid = false;
+        } else if (!noWeirdChars.test(email)) {
+            showError("email", "Email contains invalid characters.");
+            valid = false;
         }
 
-        .nav-buttons button {
-            background: #222;
-            color: #fff;
-            border: 2px solid #66b3ff;
-            padding: 10px 20px;
-            margin-right: 10px;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: 0.3s;
-            font-size: 15px;
+        if (valid) {
+            alert("Hi, " + name + "! Thanks for letting me know " + email + " is your email!");
         }
 
-        .nav-buttons button:hover {
-            background: #66b3ff;
-            color: #000;
+        return false;
+    }
+
+    function registerUser() {
+        clearErrors();
+        showError("register", "This button only shows the form action.");
+        return false;
+    }
+
+    function showUserInfo() {
+        clearErrors();
+        let valid = true;
+
+        let first = document.getElementById("first").value.trim();
+        let last = document.getElementById("last").value.trim();
+        let age = document.getElementById("age").value.trim();
+        let food = document.getElementById("food").value.trim();
+
+        if (first === "") {
+            showError("first", "First name cannot be empty.");
+            valid = false;
+        } else if (!cleanPattern.test(first) || first.length < 2 || first.length > 20) {
+            showError("first", "First name must be 2–20 letters only.");
+            valid = false;
         }
 
-        form label {
-            display: inline-block;
-            width: 140px;
+        if (last === "") {
+            showError("last", "Last name cannot be empty.");
+            valid = false;
+        } else if (!cleanPattern.test(last) || last.length < 2 || last.length > 20) {
+            showError("last", "Last name must be 2–20 letters only.");
+            valid = false;
         }
 
-        form div {
-            margin-bottom: 10px;
+        let ageNum = Number(age);
+        if (age === "") {
+            showError("age", "Age cannot be empty.");
+            valid = false;
+        } else if (isNaN(ageNum) || ageNum < 1 || ageNum > 130) {
+            showError("age", "Age must be between 1 and 130.");
+            valid = false;
         }
 
-        input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
-            padding: 6px;
-            border-radius: 4px;
-            border: 1px solid #555;
-            background: #2a2a2a;
-            color: #fff;
-            width: 200px;
-            transition: border 0.3s;
+        if (food === "") {
+            showError("food", "Favorite food cannot be empty.");
+            valid = false;
+        } else if (!foodPattern.test(food) || food.length < 2 || food.length > 30) {
+            showError("food", "Favorite food must be 2–30 letters/spaces only.");
+            valid = false;
         }
 
-        input.invalid {
-            border: 2px solid #ff4d4d;
+        if (valid) {
+            alert(`Hello ${first} ${last}! You are ${age} years old, and your favorite food is ${food}!`);
         }
 
-        input.valid {
-            border: 2px solid #4dff88;
+        return false;
+    }
+
+    function checkPassword() {
+        clearErrors();
+        let guess = document.getElementById("pwguess").value.trim();
+        let correct = "123";
+        let valid = true;
+
+        if (guess === "") {
+            showError("pwguess", "Password cannot be empty.");
+            valid = false;
+        } else if (!noWeirdChars.test(guess)) {
+            showError("pwguess", "Password contains invalid characters.");
+            valid = false;
         }
 
-        input[type="submit"] {
-            background: #66b3ff;
-            color: #000;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: 600;
-        }
-
-        input[type="submit"]:hover {
-            background: #99ccff;
-        }
-
-        .page {
-            display: none;
-            margin-top: 20px;
-        }
-
-        #home {
-            display: block;
-        }
-
-        hr {
-            border: 1px solid #444;
-        }
-
-        .error {
-            color: #ff4d4d;
-            font-size: 13px;
-            margin-top: 4px;
-            display: block;
-            opacity: 0;
-            animation: fadeIn 0.4s forwards;
-        }
-
-        .success {
-            color: #4dff88;
-            font-size: 14px;
-            margin-top: 10px;
-            opacity: 0;
-            animation: fadeIn 0.4s forwards;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-    </style>
-
-    <script>
-        function showPage(pageId) {
-            document.getElementById("home").style.display = "none";
-            document.getElementById("userinfo").style.display = "none";
-            document.getElementById("password").style.display = "none";
-            document.getElementById(pageId).style.display = "block";
-        }
-
-        const cleanPattern = /^[A-Za-z]+$/;
-        const foodPattern = /^[A-Za-z ]+$/;
-        const noWeirdChars = /^[\x20-\x7E]+$/;
-
-        function showError(id, message) {
-            const field = document.getElementById(id);
-            field.classList.remove("valid");
-            field.classList.add("invalid");
-
-            let error = field.nextElementSibling;
-            if (!error || !error.classList.contains("error")) {
-                error = document.createElement("span");
-                error.classList.add("error");
-                field.insertAdjacentElement("afterend", error);
-            }
-            error.textContent = message;
-        }
-
-        function showSuccess(formId, message) {
-            const form = document.querySelector(`#${formId} form`);
-            let success = form.querySelector(".success");
-
-            if (!success) {
-                success = document.createElement("div");
-                success.classList.add("success");
-                form.appendChild(success);
-            }
-
-            success.textContent = message;
-        }
-
-        function clearErrors() {
-            document.querySelectorAll(".error").forEach(e => e.remove());
-            document.querySelectorAll("input").forEach(i => i.classList.remove("invalid", "valid"));
-            document.querySelectorAll(".success").forEach(s => s.remove());
-        }
-
-        function validateField(id, value, emptyMsg, pattern, patternMsg) {
-            if (value === "") {
-                showError(id, emptyMsg);
-                return false;
-            }
-            if (pattern && !pattern.test(value)) {
-                showError(id, patternMsg);
-                return false;
-            }
-            const field = document.getElementById(id);
-            field.classList.remove("invalid");
-            field.classList.add("valid");
-            return true;
-        }
-
-        function setAction(form, name, email) {
-            clearErrors();
-            let valid = true;
-
-            valid &= validateField("name", name, "Name cannot be empty.", cleanPattern, "Name must be 2–20 letters only.");
-            valid &= validateField("email", email, "Email cannot be empty.", noWeirdChars, "Email contains invalid characters.");
-
-            if (valid) {
-                showSuccess("home", `Hi ${name}! Your email (${email}) has been recorded.`);
-            }
-
-            return false;
-        }
-
-        function registerUser() {
-            clearErrors();
-            showError("register", "This button only shows the form action.");
-            return false;
-        }
-
-        function showUserInfo() {
-            clearErrors();
-            let valid = true;
-
-            let first = document.getElementById("first").value.trim();
-            let last = document.getElementById("last").value.trim();
-            let age = document.getElementById("age").value.trim();
-            let food = document.getElementById("food").value.trim();
-
-            valid &= validateField("first", first, "First name cannot be empty.", cleanPattern, "First name must be 2–20 letters only.");
-            valid &= validateField("last", last, "Last name cannot be empty.", cleanPattern, "Last name must be 2–20 letters only.");
-
-            if (age === "" || isNaN(Number(age)) || Number(age) < 1 || Number(age) > 130) {
-                showError("age", "Age must be between 1 and 130.");
-                valid = false;
+        if (valid) {
+            if (guess === correct) {
+                alert("Correct! You guessed the password!");
             } else {
-                document.getElementById("age").classList.add("valid");
+                showError("pwguess", "Incorrect password.");
             }
-
-            valid &= validateField("food", food, "Favorite food cannot be empty.", foodPattern, "Favorite food must be 2–30 letters/spaces only.");
-
-            if (valid) {
-                showSuccess("userinfo", `Hello ${first} ${last}! Age ${age}, favorite food: ${food}.`);
-            }
-
-            return false;
         }
 
-        function checkPassword() {
-            clearErrors();
-            let guess = document.getElementById("pwguess").value.trim();
-            let correct = "123";
-            let valid = true;
+        return false;
+    }
 
-            valid &= validateField("pwguess", guess, "Password cannot be empty.", noWeirdChars, "Password contains invalid characters.");
-
-            if (valid) {
-                if (guess === correct) {
-                    showSuccess("password", "Correct! You guessed the password!");
-                } else {
-                    showError("pwguess", "Incorrect password.");
-                }
-            }
-
-            return false;
-        }
-
-        // Clear all inputs on page reload
-        window.addEventListener("load", () => {
-            document.querySelectorAll("input").forEach(i => i.value = "");
-        });
-    </script>
-</head>
-
-<body>
-
-    <div class="nav-buttons">
-        <button onclick="showPage('home')">Home</button>
-        <button onclick="showPage('userinfo')">User Info Form</button>
-        <button onclick="showPage('password')">Password Guess Form</button>
-    </div>
-
-    <div id="home" class="page">
-        <h2>Original Form</h2>
-
-        <form onsubmit="return setAction(
-            this,
-            document.getElementById('name').value,
-            document.getElementById('email').value )">
-            <div>
-                <label>Name:</label>
-                <input id="name" name="name" type="text">
-            </div>
-            <div>
-                <label>Email:</label>
-                <input id="email" name="email" type="email">
-            </div>
-            <div>
-                <input id="submit" type="submit">
-            </div>
-        </form>
-
-        <hr>
-
-        <form name="user_form">
-            <div>
-                <input id="register" type="submit" value="Register" onclick="return registerUser()">
-            </div>
-        </form>
-    </div>
-
-    <div id="userinfo" class="page">
-        <h2>User Information Form</h2>
-
-        <form onsubmit="return showUserInfo()">
-            <div>
-                <label>First Name:</label>
-                <input id="first" type="text">
-            </div>
-            <div>
-                <label>Last Name:</label>
-                <input id="last" type="text">
-            </div>
-            <div>
-                <label>Age:</label>
-                <input id="age" type="number" min="1">
-            </div>
-            <div>
-                <label>Favorite Food:</label>
-                <input id="food" type="text">
-            </div>
-            <div>
-                <input type="submit" value="Submit Info">
-            </div>
-        </form>
-    </div>
-
-    <div id="password" class="page">
-        <h2>Password Guess Form</h2>
-
-        <form onsubmit="return checkPassword()">
-            <div>
-                <label>Password Guess:</label>
-                <input id="pwguess" type="password">
-            </div>
-            <div>
-                <input type="submit" value="Guess Password">
-            </div>
-        </form>
-    </div>
-
-</body>
-</html>
+    // Clear all inputs on page reload
+    window.addEventListener("load", () => {
+        document.querySelectorAll("input").forEach(i => i.value = "");
+    });
+</script>
