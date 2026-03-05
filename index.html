@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forms Assignment</title>
+
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #e6e6e6;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #66b3ff;
+        }
+
+        .nav-buttons button {
+            background: #333;
+            color: #fff;
+            border: 2px solid #66b3ff;
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background: #66b3ff;
+            color: #000;
+        }
+
+        form label {
+            display: inline-block;
+            width: 120px;
+        }
+
+        form div {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background: #333;
+            color: #fff;
+        }
+
+        input[type="submit"] {
+            background: #66b3ff;
+            color: #000;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background: #99ccff;
+        }
+
+        .page {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #home {
+            display: block;
+        }
+
+        hr {
+            border: 1px solid #444;
+        }
+    </style>
+
+    <script>
+        function showPage(pageId) {
+            document.getElementById("home").style.display = "none";
+            document.getElementById("userinfo").style.display = "none";
+            document.getElementById("password").style.display = "none";
+
+            document.getElementById(pageId).style.display = "block";
+        }
+
+        function setAction(form, name, email) {
+            alert("Hi, " + name + "! Thanks for letting me know " + email + " is your email!");
+            return false;
+        }
+
+        function registerUser() {
+            alert(document.user_form.action);
+            return false;
+        }
+
+        function showUserInfo() {
+            let first = document.getElementById("first").value;
+            let last = document.getElementById("last").value;
+            let age = document.getElementById("age").value;
+            let food = document.getElementById("food").value;
+
+            alert("Hello " + first + " " + last + "! You are " + age + " years old, and your favorite food is " + food + "!");
+            return false;
+        }
+
+        function checkPassword() {
+            let guess = document.getElementById("pwguess").value;
+            let correct = "SuperSecret!";
+
+            if (guess == correct) {
+                alert("Correct! You guessed the password!");
+            } else {
+                alert("Sorry, that is not the password.");
+            }
+            return false;
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="nav-buttons">
+        <button onclick="showPage('home')">Home</button>
+        <button onclick="showPage('userinfo')">User Info Form</button>
+        <button onclick="showPage('password')">Password Guess Form</button>
+    </div>
+
+    <!-- HOME PAGE (Original Code) -->
+    <div id="home" class="page">
+        <h2>Original Form</h2>
+
+        <form onsubmit="return setAction(
+            this,
+            document.getElementById('name').value,
+            document.getElementById('email').value )">
+            <div>
+                <label>Name:</label>
+                <input id="name" name="name" type="text">
+            </div>
+            <div>
+                <label>Email:</label>
+                <input id="email" name="email" type="email">
+            </div>
+            <div>
+                <input id="submit" type="submit">
+            </div>
+        </form>
+
+        <hr>
+
+        <form name="user_form">
+            <div>
+                <input id="register" type="submit" value="Register" onclick="return registerUser()">
+            </div>
+        </form>
+    </div>
+
+    <!-- USER INFO FORM -->
+    <div id="userinfo" class="page">
+        <h2>User Information Form</h2>
+
+        <form onsubmit="return showUserInfo()">
+            <div>
+                <label>First Name:</label>
+                <input id="first" type="text">
+            </div>
+            <div>
+                <label>Last Name:</label>
+                <input id="last" type="text">
+            </div>
+            <div>
+                <label>Age:</label>
+                <input id="age" type="number">
+            </div>
+            <div>
+                <label>Favorite Food:</label>
+                <input id="food" type="text">
+            </div>
+            <div>
+                <input type="submit" value="Submit Info">
+            </div>
+        </form>
+    </div>
+
+    <!-- PASSWORD GUESS FORM -->
+    <div id="password" class="page">
+        <h2>Password Guess Form</h2>
+
+        <form onsubmit="return checkPassword()">
+            <div>
+                <label>Password Guess:</label>
+                <input id="pwguess" type="password">
+            </div>
+            <div>
+                <input type="submit" value="Guess Password">
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
