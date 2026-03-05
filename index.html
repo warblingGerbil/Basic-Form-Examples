@@ -118,6 +118,12 @@
             animation: fadeIn 0.4s forwards;
         }
 
+        .info-text {
+            color: #aaa;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
         @keyframes fadeIn {
             to { opacity: 1; }
         }
@@ -142,124 +148,7 @@
 
             let error = field.nextElementSibling;
             if (!error || !error.classList.contains("error")) {
-                error = document.createElement("span");
-                error.classList.add("error");
-                field.insertAdjacentElement("afterend", error);
-            }
-            error.textContent = message;
-        }
-
-        function showSuccess(formId, message) {
-            const form = document.querySelector(`#${formId} form`);
-            let success = form.querySelector(".success");
-
-            if (!success) {
-                success = document.createElement("div");
-                success.classList.add("success");
-                form.appendChild(success);
-            }
-
-            success.textContent = message;
-        }
-
-        function clearErrors() {
-            document.querySelectorAll(".error").forEach(e => e.remove());
-            document.querySelectorAll("input").forEach(i => i.classList.remove("invalid", "valid"));
-            document.querySelectorAll(".success").forEach(s => s.remove());
-        }
-
-        function validateField(id, value, emptyMsg, pattern, patternMsg) {
-            if (value === "") {
-                showError(id, emptyMsg);
-                return false;
-            }
-            if (pattern && !pattern.test(value)) {
-                showError(id, patternMsg);
-                return false;
-            }
-            const field = document.getElementById(id);
-            field.classList.remove("invalid");
-            field.classList.add("valid");
-            return true;
-        }
-
-        function setAction(form, name, email) {
-            clearErrors();
-            let valid = true;
-
-            valid &= validateField("name", name, "Name cannot be empty.", cleanPattern, "Name must be 2–20 letters only.");
-            valid &= validateField("email", email, "Email cannot be empty.", noWeirdChars, "Email contains invalid characters.");
-
-            if (valid) {
-                showSuccess("home", `Hi ${name}! Your email (${email}) has been recorded.`);
-            }
-
-            return false;
-        }
-
-        function registerUser() {
-            clearErrors();
-            showError("register", "This button only shows the form action.");
-            return false;
-        }
-
-        function showUserInfo() {
-            clearErrors();
-            let valid = true;
-
-            let first = document.getElementById("first").value.trim();
-            let last = document.getElementById("last").value.trim();
-            let age = document.getElementById("age").value.trim();
-            let food = document.getElementById("food").value.trim();
-
-            valid &= validateField("first", first, "First name cannot be empty.", cleanPattern, "First name must be 2–20 letters only.");
-            valid &= validateField("last", last, "Last name cannot be empty.", cleanPattern, "Last name must be 2–20 letters only.");
-
-            if (age === "" || isNaN(Number(age)) || Number(age) < 1 || Number(age) > 130) {
-                showError("age", "Age must be between 1 and 130.");
-                valid = false;
-            } else {
-                document.getElementById("age").classList.add("valid");
-            }
-
-            valid &= validateField("food", food, "Favorite food cannot be empty.", foodPattern, "Favorite food must be 2–30 letters/spaces only.");
-
-            if (valid) {
-                showSuccess("userinfo", `Hello ${first} ${last}! Age ${age}, favorite food: ${food}.`);
-            }
-
-            return false;
-        }
-
-        function checkPassword() {
-            clearErrors();
-            let guess = document.getElementById("pwguess").value.trim();
-            let correct = "123";
-            let valid = true;
-
-            valid &= validateField("pwguess", guess, "Password cannot be empty.", noWeirdChars, "Password contains invalid characters.");
-
-            if (valid) {
-                if (guess === correct) {
-                    showSuccess("password", "Correct! You guessed the password!");
-                } else {
-                    showError("pwguess", "Incorrect password.");
-                }
-            }
-
-            return false;
-        }
-
-        // Clear all inputs on page reload
-        window.addEventListener("load", () => {
-            document.querySelectorAll("input").forEach(i => i.value = "");
-        });
-    </script>
-</head>
-
-<body>
-
-    <div class="nav-buttons">
+@@ -263,74 +257,68 @@
         <button onclick="showPage('home')">Home</button>
         <button onclick="showPage('userinfo')">User Info Form</button>
         <button onclick="showPage('password')">Password Guess Form</button>
@@ -281,17 +170,15 @@
                 <input id="email" name="email" type="email">
             </div>
             <div>
-                <input id="submit" type="submit">
+                <input id="submit" type="submit" value="Submit">
             </div>
         </form>
 
         <hr>
 
-        <form name="user_form">
-            <div>
-                <input id="register" type="submit" value="Register" onclick="return registerUser()">
-            </div>
-        </form>
+        <div id="register" class="info-text">
+            This form has no registration action.
+        </div>
     </div>
 
     <div id="userinfo" class="page">
