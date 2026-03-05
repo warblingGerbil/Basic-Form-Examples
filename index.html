@@ -72,13 +72,7 @@
             font-weight: 600;
         }
 
-        input[type="submit"]:disabled {
-            background: #444;
-            color: #777;
-            cursor: not-allowed;
-        }
-
-        input[type="submit"]:hover:enabled {
+        input[type="submit"]:hover {
             background: #99ccff;
         }
 
@@ -91,22 +85,12 @@
             display: block;
         }
 
-        .error {
-            color: #ff6666;
-            font-size: 13px;
-            height: 16px;
-        }
-
         hr {
             border: 1px solid #444;
         }
     </style>
 
     <script>
-        window.onload = function() {
-            document.querySelectorAll("input").forEach(i => i.value = "");
-        };
-
         function showPage(pageId) {
             document.getElementById("home").style.display = "none";
             document.getElementById("userinfo").style.display = "none";
@@ -118,25 +102,15 @@
         const foodPattern = /^[A-Za-z ]+$/;
         const noWeirdChars = /^[\x20-\x7E]+$/;
 
-        function validateHome() {
-            let name = document.getElementById("name").value.trim();
-            let email = document.getElementById("email").value.trim();
-            let valid = true;
-
-            if (!cleanPattern.test(name) || name.length < 2 || name.length > 20) {
-                document.getElementById("err_name").innerText = "Name must be 2–20 letters only.";
-                valid = false;
-            } else document.getElementById("err_name").innerText = "";
-
-            if (!noWeirdChars.test(email) || email.length < 3) {
-                document.getElementById("err_email").innerText = "Invalid email characters.";
-                valid = false;
-            } else document.getElementById("err_email").innerText = "";
-
-            document.getElementById("submit").disabled = !valid;
-        }
-
         function setAction(form, name, email) {
+            if (!cleanPattern.test(name) || name.length < 2 || name.length > 20) {
+                alert("Name must be 2–20 letters only, no spaces or symbols.");
+                return false;
+            }
+            if (!noWeirdChars.test(email)) {
+                alert("Email contains invalid characters.");
+                return false;
+            }
             alert("Hi, " + name + "! Thanks for letting me know " + email + " is your email!");
             return false;
         }
@@ -146,57 +120,54 @@
             return false;
         }
 
-        function validateUserInfo() {
-            let first = document.getElementById("first").value.trim();
-            let last = document.getElementById("last").value.trim();
-            let age = document.getElementById("age").value.trim();
-            let food = document.getElementById("food").value.trim();
-            let valid = true;
-
-            if (!cleanPattern.test(first) || first.length < 2 || first.length > 20) {
-                document.getElementById("err_first").innerText = "First name must be 2–20 letters.";
-                valid = false;
-            } else document.getElementById("err_first").innerText = "";
-
-            if (!cleanPattern.test(last) || last.length < 2 || last.length > 20) {
-                document.getElementById("err_last").innerText = "Last name must be 2–20 letters.";
-                valid = false;
-            } else document.getElementById("err_last").innerText = "";
-
-            let ageNum = Number(age);
-            if (isNaN(ageNum) || ageNum < 1 || ageNum > 130) {
-                document.getElementById("err_age").innerText = "Age must be 1–130.";
-                valid = false;
-            } else document.getElementById("err_age").innerText = "";
-
-            if (!foodPattern.test(food) || food.length < 2 || food.length > 30) {
-                document.getElementById("err_food").innerText = "Food must be 2–30 letters/spaces.";
-                valid = false;
-            } else document.getElementById("err_food").innerText = "";
-
-            document.getElementById("submit_info").disabled = !valid;
-        }
-
         function showUserInfo() {
             let first = document.getElementById("first").value.trim();
             let last = document.getElementById("last").value.trim();
             let age = document.getElementById("age").value.trim();
             let food = document.getElementById("food").value.trim();
+
+            if (!cleanPattern.test(first) || first.length < 2 || first.length > 20) {
+                alert("First name must be 2–20 letters only.");
+                return false;
+            }
+            if (!cleanPattern.test(last) || last.length < 2 || last.length > 20) {
+                alert("Last name must be 2–20 letters only.");
+                return false;
+            }
+
+            let ageNum = Number(age);
+            if (isNaN(ageNum) || ageNum < 1 || ageNum > 130) {
+                alert("Age must be a number between 1 and 130.");
+                return false;
+            }
+
+            document.getElementById("age").addEventListener("input", function () {
+                if (this.value < 1) this.value = 1;
+            });
+
+            if (!foodPattern.test(food) || food.length < 2 || food.length > 30) {
+                alert("Favorite food must be 2–30 letters/spaces only.");
+                return false;
+            }
+
             alert("Hello " + first + " " + last + "! You are " + age + " years old, and your favorite food is " + food + "!");
             return false;
         }
 
-        function validatePassword() {
-            let guess = document.getElementById("pwguess").value.trim();
-            let valid = noWeirdChars.test(guess);
-            document.getElementById("err_pw").innerText = valid ? "" : "Invalid characters.";
-            document.getElementById("submit_pw").disabled = !valid;
-        }
-
         function checkPassword() {
             let guess = document.getElementById("pwguess").value.trim();
-            if (guess === "123") alert("Correct! You guessed the password!");
-            else alert("Sorry, that is not the password.");
+            let correct = "123";
+
+            if (!noWeirdChars.test(guess)) {
+                alert("Password contains invalid characters.");
+                return false;
+            }
+
+            if (guess === correct) {
+                alert("Correct! You guessed the password!");
+            } else {
+                alert("Sorry, that is not the password.");
+            }
             return false;
         }
     </script>
@@ -213,27 +184,26 @@
     <div id="home" class="page">
         <h2>Original Form</h2>
 
-        <form autocomplete="off" oninput="validateHome()" onsubmit="return setAction(this, name.value, email.value)">
+        <form onsubmit="return setAction(
+            this,
+            document.getElementById('name').value,
+            document.getElementById('email').value )">
             <div>
                 <label>Name:</label>
-                <input id="name" type="text">
+                <input id="name" name="name" type="text">
             </div>
-            <div class="error" id="err_name"></div>
-
             <div>
                 <label>Email:</label>
-                <input id="email" type="email">
+                <input id="email" name="email" type="email">
             </div>
-            <div class="error" id="err_email"></div>
-
             <div>
-                <input id="submit" type="submit" disabled>
+                <input id="submit" type="submit">
             </div>
         </form>
 
         <hr>
 
-        <form name="user_form" autocomplete="off">
+        <form name="user_form">
             <div>
                 <input id="register" type="submit" value="Register" onclick="return registerUser()">
             </div>
@@ -243,33 +213,25 @@
     <div id="userinfo" class="page">
         <h2>User Information Form</h2>
 
-        <form autocomplete="off" oninput="validateUserInfo()" onsubmit="return showUserInfo()">
+        <form onsubmit="return showUserInfo()">
             <div>
                 <label>First Name:</label>
                 <input id="first" type="text">
             </div>
-            <div class="error" id="err_first"></div>
-
             <div>
                 <label>Last Name:</label>
                 <input id="last" type="text">
             </div>
-            <div class="error" id="err_last"></div>
-
             <div>
                 <label>Age:</label>
                 <input id="age" type="number" min="1">
             </div>
-            <div class="error" id="err_age"></div>
-
             <div>
                 <label>Favorite Food:</label>
                 <input id="food" type="text">
             </div>
-            <div class="error" id="err_food"></div>
-
             <div>
-                <input id="submit_info" type="submit" value="Submit Info" disabled>
+                <input type="submit" value="Submit Info">
             </div>
         </form>
     </div>
@@ -277,15 +239,13 @@
     <div id="password" class="page">
         <h2>Password Guess Form</h2>
 
-        <form autocomplete="off" oninput="validatePassword()" onsubmit="return checkPassword()">
+        <form onsubmit="return checkPassword()">
             <div>
                 <label>Password Guess:</label>
                 <input id="pwguess" type="password">
             </div>
-            <div class="error" id="err_pw"></div>
-
             <div>
-                <input id="submit_pw" type="submit" value="Guess Password" disabled>
+                <input type="submit" value="Guess Password">
             </div>
         </form>
     </div>
