@@ -97,6 +97,10 @@
             display: block;
         }
 
+        hr {
+            border: 1px solid #444;
+        }
+
         .error {
             color: #ff4d4d;
             font-size: 13px;
@@ -130,15 +134,6 @@
         const cleanPattern = /^[A-Za-z]+$/;
         const foodPattern = /^[A-Za-z ]+$/;
         const noWeirdChars = /^[\x20-\x7E]+$/;
-
-        const validEmailEndings = [
-            ".com", ".net", ".org", ".edu", ".gov",
-            ".io", ".co", ".us", ".info"
-        ];
-
-        function emailHasValidEnding(email) {
-            return validEmailEndings.some(end => email.toLowerCase().endsWith(end));
-        }
 
         function showError(id, message) {
             const field = document.getElementById(id);
@@ -192,24 +187,19 @@
             clearErrors();
             let valid = true;
 
-            if (!validateField("name", name, "Name cannot be empty.", cleanPattern, "Name must be 2–20 letters only.")) {
-                valid = false;
-            } else if (name.length < 2 || name.length > 20) {
-                showError("name", "Name must be 2–20 letters only.");
-                valid = false;
-            }
-
-            if (!validateField("email", email, "Email cannot be empty.", noWeirdChars, "Email contains invalid characters.")) {
-                valid = false;
-            } else if (!emailHasValidEnding(email)) {
-                showError("email", "Email must end with a valid domain (.com, .net, .org, etc.)");
-                valid = false;
-            }
+            valid &= validateField("name", name, "Name cannot be empty.", cleanPattern, "Name must be 2–20 letters only.");
+            valid &= validateField("email", email, "Email cannot be empty.", noWeirdChars, "Email contains invalid characters.");
 
             if (valid) {
                 showSuccess("home", `Hi ${name}! Your email (${email}) has been recorded.`);
             }
 
+            return false;
+        }
+
+        function registerUser() {
+            clearErrors();
+            showError("register", "This button only shows the form action.");
             return false;
         }
 
@@ -222,35 +212,17 @@
             let age = document.getElementById("age").value.trim();
             let food = document.getElementById("food").value.trim();
 
-            if (!validateField("first", first, "First name cannot be empty.", cleanPattern, "First name must be 2–20 letters only.")) {
-                valid = false;
-            } else if (first.length < 2 || first.length > 20) {
-                showError("first", "First name must be 2–20 letters only.");
-                valid = false;
-            }
-
-            if (!validateField("last", last, "Last name cannot be empty.", cleanPattern, "Last name must be 2–20 letters only.")) {
-                valid = false;
-            } else if (last.length < 2 || last.length > 20) {
-                showError("last", "Last name must be 2–20 letters only.");
-                valid = false;
-            }
+            valid &= validateField("first", first, "First name cannot be empty.", cleanPattern, "First name must be 2–20 letters only.");
+            valid &= validateField("last", last, "Last name cannot be empty.", cleanPattern, "Last name must be 2–20 letters only.");
 
             if (age === "" || isNaN(Number(age)) || Number(age) < 1 || Number(age) > 130) {
                 showError("age", "Age must be between 1 and 130.");
                 valid = false;
             } else {
-                const ageField = document.getElementById("age");
-                ageField.classList.remove("invalid");
-                ageField.classList.add("valid");
+                document.getElementById("age").classList.add("valid");
             }
 
-            if (!validateField("food", food, "Favorite food cannot be empty.", foodPattern, "Favorite food must be 2–30 letters/spaces only.")) {
-                valid = false;
-            } else if (food.length < 2 || food.length > 30) {
-                showError("food", "Favorite food must be 2–30 letters/spaces only.");
-                valid = false;
-            }
+            valid &= validateField("food", food, "Favorite food cannot be empty.", foodPattern, "Favorite food must be 2–30 letters/spaces only.");
 
             if (valid) {
                 showSuccess("userinfo", `Hello ${first} ${last}! Age ${age}, favorite food: ${food}.`);
@@ -265,9 +237,7 @@
             let correct = "123";
             let valid = true;
 
-            if (!validateField("pwguess", guess, "Password cannot be empty.", noWeirdChars, "Password contains invalid characters.")) {
-                valid = false;
-            }
+            valid &= validateField("pwguess", guess, "Password cannot be empty.", noWeirdChars, "Password contains invalid characters.");
 
             if (valid) {
                 if (guess === correct) {
@@ -311,7 +281,15 @@
                 <input id="email" name="email" type="email">
             </div>
             <div>
-                <input id="submit" type="submit" value="Submit">
+                <input id="submit" type="submit">
+            </div>
+        </form>
+
+        <hr>
+
+        <form name="user_form">
+            <div>
+                <input id="register" type="submit" value="Register" onclick="return registerUser()">
             </div>
         </form>
     </div>
