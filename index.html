@@ -129,26 +129,47 @@
         }
 
         function setAction(form, name, email) {
-            clearErrors();
-            let valid = true;
+    clearErrors();
+    let valid = true;
 
-            if (!cleanPattern.test(name) || name.length < 2 || name.length > 20) {
-                showError("name", "Name must be 2–20 letters only.");
-                valid = false;
-            }
+    name = name.trim();
+    email = email.trim();
 
-            if (!noWeirdChars.test(email)) {
-                showError("email", "Email contains invalid characters.");
-                valid = false;
-            }
+    if (name === "") {
+        showError("name", "Name cannot be empty.");
+        valid = false;
+    }
 
-            if (valid) {
-                alert("Hi, " + name + "! Thanks for letting me know " + email + " is your email!");
-            }
+    if (email === "") {
+        showError("email", "Email cannot be empty.");
+        valid = false;
+    }
+            
+    if (name !== "" && (!cleanPattern.test(name) || name.length < 2 || name.length > 20)) {
+        showError("name", "Name must be 2–20 letters only.");
+        valid = false;
+    }
 
-            return false;
-        }
+    if (email !== "" && !noWeirdChars.test(email)) {
+        showError("email", "Email contains invalid characters.");
+        valid = false;
+    }
 
+    const emailEndingPattern = /^[^@]+@[^@]+\.(com|edu|net|org|gov|io|co|us|info)$/i;
+
+    if (email !== "" && !emailEndingPattern.test(email)) {
+        showError("email", "Email must end with a valid domain (e.g., .com, .edu).");
+        valid = false;
+    }
+
+    if (valid) {
+        alert("Hi, " + name + "! Thanks for letting me know " + email + " is your email!");
+    }
+
+    return false;
+}
+
+        
         function registerUser() {
             clearErrors();
             showError("register", "This button only shows the form action.");
